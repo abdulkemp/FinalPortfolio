@@ -69,7 +69,7 @@ class Timeline {
 // Testimonials
 class Testimonial {
     fetchTestimonials(req, res) {
-        const fetchAllTestimonials = `SELECT idtest, testName, testSpeech, testTmage, FROM testimonials;`;
+        const fetchAllTestimonials = `SELECT idtest, testName, testSpeech, testImage, FROM testimonials;`;
 
         db.query(fetchAllTestimonials, (err, results) => {
             if (err) throw err, console.log(err);
@@ -79,7 +79,7 @@ class Testimonial {
         });
     };
     fetchTestimonial(req, res) {
-        const fetchTestimonialQuery = `SELECT idtest, testName, testSpeech, testTmage, FROM testimonials WHERE idtest = ?;`;
+        const fetchTestimonialQuery = `SELECT idtest, testName, testSpeech, testImage, FROM testimonials WHERE idtest = ?;`;
 
         db.query(fetchTestimonialQuery, [req.params.id], (err, results) => {
             if (err) throw err, console.log(err);
