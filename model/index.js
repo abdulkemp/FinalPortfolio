@@ -3,7 +3,7 @@ const db = require('../config');
  // Timelines
 class Timeline {
     fetchTimelines(req, res) {
-        const fetchAllTimelines = `SELECT idtimeline, timeName, timeSetDate, timeDesc, FROM Timelines;`;
+        const fetchAllTimelines = `SELECT idtimeline, timeName, timeSetDate, timeDesc, FROM timelines;`;
 
         db.query(fetchAllTimelines, (err, results) => {
             if (err) throw err, console.log(err);
@@ -13,7 +13,7 @@ class Timeline {
         });
     };
     fetchTimeline(req, res) {
-        const fetchTimelineQuery = `SELECT idtimeline, timeName, timeSetDate, timeDesc, FROM Timelines WHERE idtimeline = ?;`;
+        const fetchTimelineQuery = `SELECT idtimeline, timeName, timeSetDate, timeDesc, FROM timelines WHERE idtimeline = ?;`;
 
         db.query(fetchTimelineQuery, [req.params.id], (err, results) => {
             if (err) throw err, console.log(err);
@@ -23,7 +23,7 @@ class Timeline {
         });
     };
     addTimeline(req, res) {
-        const addTimelineQuery = `INSERT INTO Timelines SET ?;`;
+        const addTimelineQuery = `INSERT INTO timelines SET ?;`;
 
         db.query(addTimelineQuery, [req.body], (err) => {
             if (err) {
@@ -38,7 +38,7 @@ class Timeline {
         });
     };
     updateTimeline(req, res) {
-        const updateQuery = `UPDATE Timelines SET ? WHERE idtimeline = ?;`;
+        const updateQuery = `UPDATE timelines SET ? WHERE idtimeline = ?;`;
 
         db.query(updateQuery, [req.body, req.params.id], (err) => {
             if (err) {
@@ -54,7 +54,7 @@ class Timeline {
         });
     }
     deleteTimeline(req, res) {
-        const deleteQuery = `DELETE FROM Timelines WHERE idtimeline = ?;`;
+        const deleteQuery = `DELETE FROM timelines WHERE idtimeline = ?;`;
 
         db.query(deleteQuery, [req.params.id], (err) => {
             if (err) res.status(400).json({
@@ -69,7 +69,7 @@ class Timeline {
 // Testimonials
 class Testimonial {
     fetchTestimonials(req, res) {
-        const fetchAllTestimonials = `SELECT idtest, testName, testSpeech, testTmage, FROM Testimonials;`;
+        const fetchAllTestimonials = `SELECT idtest, testName, testSpeech, testTmage, FROM testimonials;`;
 
         db.query(fetchAllTestimonials, (err, results) => {
             if (err) throw err, console.log(err);
@@ -79,7 +79,7 @@ class Testimonial {
         });
     };
     fetchTestimonial(req, res) {
-        const fetchTestimonialQuery = `SELECT idtest, testName, testSpeech, testTmage, FROM Testimonials WHERE idtest = ?;`;
+        const fetchTestimonialQuery = `SELECT idtest, testName, testSpeech, testTmage, FROM testimonials WHERE idtest = ?;`;
 
         db.query(fetchTestimonialQuery, [req.params.id], (err, results) => {
             if (err) throw err, console.log(err);
@@ -89,7 +89,7 @@ class Testimonial {
         });
     };
     addTestimonial(req, res) {
-        const addTestimonialQuery = `INSERT INTO Testimonials SET ?;`;
+        const addTestimonialQuery = `INSERT INTO testimonials SET ?;`;
 
         db.query(addTestimonialQuery, [req.body], (err) => {
             if (err) {
@@ -104,7 +104,7 @@ class Testimonial {
         });
     };
     updateTestimonial(req, res) {
-        const updateQuery = `UPDATE Testimonials SET ? WHERE idtest = ?;`;
+        const updateQuery = `UPDATE testimonials SET ? WHERE idtest = ?;`;
 
         db.query(updateQuery, [req.body, req.params.id], (err) => {
             if (err) {
@@ -120,7 +120,7 @@ class Testimonial {
         });
     }
     deleteTestimonial(req, res) {
-        const deleteQuery = `DELETE FROM Testimonials WHERE idtest = ?;`;
+        const deleteQuery = `DELETE FROM testimonials WHERE idtest = ?;`;
 
         db.query(deleteQuery, [req.params.id], (err) => {
             if (err) res.status(400).json({
@@ -135,7 +135,7 @@ class Testimonial {
 // Projects
 class Project {
     fetchProjects(req, res) {
-        const fetchAllProjects = `SELECT idprojects, projName, github, liveLink, image, FROM Projects;`;
+        const fetchAllProjects = `SELECT idprojects, projName, github, liveLink, image, FROM projects;`;
 
         db.query(fetchAllProjects, (err, results) => {
             if (err) throw err, console.log(err);
@@ -145,7 +145,7 @@ class Project {
         });
     };
     fetchProject(req, res) {
-        const fetchProjectQuery = `SELECT idprojects, projName, github, liveLink, image, FROM Projects WHERE idprojects = ?;`;
+        const fetchProjectQuery = `SELECT idprojects, projName, github, liveLink, image, FROM projects WHERE idprojects = ?;`;
 
         db.query(fetchProjectQuery, [req.params.id], (err, results) => {
             if (err) throw err, console.log(err);
@@ -155,7 +155,7 @@ class Project {
         });
     };
     addProject(req, res) {
-        const addProjectQuery = `INSERT INTO Projects SET ?;`;
+        const addProjectQuery = `INSERT INTO projects SET ?;`;
 
         db.query(addProjectQuery, [req.body], (err) => {
             if (err) {
@@ -170,7 +170,7 @@ class Project {
         });
     };
     updateProject(req, res) {
-        const updateQuery = `UPDATE Projects SET ? WHERE idprojects = ?;`;
+        const updateQuery = `UPDATE projects SET ? WHERE idprojects = ?;`;
 
         db.query(updateQuery, [req.body, req.params.id], (err) => {
             if (err) {
@@ -186,7 +186,7 @@ class Project {
         });
     }
     deleteProject(req, res) {
-        const deleteQuery = `DELETE FROM Projects WHERE idprojects = ?;`;
+        const deleteQuery = `DELETE FROM projects WHERE idprojects = ?;`;
 
         db.query(deleteQuery, [req.params.id], (err) => {
             if (err) res.status(400).json({
