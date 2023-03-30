@@ -1,170 +1,44 @@
 const db = require('../config');
 
-const {
-    hash,
-    compare,
-    hashSync
-} = require('bcrypt');
+ // Timelines
+class Timeline {
+    fetchTimelines(req, res) {
+        const fetchAllTimelines = `SELECT id, prodName, prodDesc, price, category, quantity, image, shipPrice FROM Timelines;`;
 
-const {
-    createToken
-} = require('../middleware/AuthenticatedUser.js');
-
-class User {
-    login(req, res) {
-        const {
-            emailAdd,
-            password
-        } = req.body;
-        const verifyQuery = `select * FROM Users where emailAdd = '${emailAdd}';`;
-
-        db.query(verifyQuery, async (err, data) => {
-            const userLog = data
-            if (err) throw err, console.log(err);
-            if ((!data) || (data == null)) {
-                res.status(401).json({
-                    err: 'You entered the wrong email address'
-                })
-            } else {
-                await compare(password, data[0].password, (cErr, cResult) => {
-                    if (cErr) throw cErr, console.log(cErr);
-
-                    const jwToken = createToken({
-                        emailAdd,
-                        password
-                    });
-                    if (cResult) {
-                        res.status(200).json({
-                            msg: 'Logged In',
-                            jwToken,
-                            result: data
-                        })
-                    } else {
-                        res.status(401).json({
-                            err: 'You entered an invalid password or have not registered.'
-                        });
-                    };
-                });
-            };
-        });
-    };
-    fetchUsers(req, res) {
-        const fetchAllUsersQuery = `select userID, firstName, lastName, emailAdd, password, imgPro FROM Users;`;
-
-        db.query(fetchAllUsersQuery, (err, data) => {
-            if (err) throw err, console.log(err);
-            else res.status(200).json({
-                results: data
-            });
-        });
-    };
-    fetchUser(req, res) {
-        const fetchUserQuery = `select userID, firstName, lastName, emailAdd, password, imgPro FROM Users where userID = ?;`;
-
-        db.query(fetchUserQuery, [req.params.id], (err, data) => {
-            if (err) throw err, console.log(err);
-            else res.status(200).json({
-                results: data
-            });
-        });
-    };
-    async createUser(req, res) {
-        let detail = req.body;
-
-        detail.password = await hash(detail.password, 15);
-
-        let user = {
-            emailAdd: detail.emailAdd,
-            password: detail.password,
-            // confirm_psw: detail.confirm_psw
-        }
-
-        const strQry = `INSERT INTO Users SET ?;`;
-
-        db.query(strQry, [detail], (err) => {
-            if (err) {
-                console.log(err)
-                res.status(401).json({
-                    err
-                });
-            } else {
-                const jwToken = createToken(user);
-
-                res.cookie('UserFoundInDatabase', jwToken, {
-                    maxAge: 3600000,
-                    httpOnly: true
-                });
-                res.status(200).json({
-                    msg: 'A user record was saved.'
-                });
-            };
-        });
-    };
-    updateUser(req, res) {
-        const data = req.body;
-        if (data.password !== null || data.password !== undefined)
-            data.password = hashSync(data.password, 15);
-
-        const updateQuery = `UPDATE Users SET ? WHERE userID = ?;`;
-
-        db.query(updateQuery, [data, req.params.id], (err) => {
-            if (err) throw err, console.log(err);
-            res.status(200).json({
-                msg: 'A row was affected.'
-            });
-        });
-    };
-    deleteUser(req, res) {
-        const deleteQuery = `DELETE FROM Users WHERE userID = ?;`;
-
-        db.query(deleteQuery, [req.params.id], (err) => {
-            if (err) throw err, console.log(err);
-            res.status(200).json({
-                msg: 'A record was removed from a database'
-            });
-        });
-    };
-};
-
-
-class Product {
-    fetchProducts(req, res) {
-        const fetchAllProducts = `SELECT id, prodName, prodDesc, price, category, quantity, image, shipPrice FROM Products;`;
-
-        db.query(fetchAllProducts, (err, results) => {
+        db.query(fetchAllTimelines, (err, results) => {
             if (err) throw err, console.log(err);
             res.status(200).json({
                 results: results
             });
         });
     };
-    fetchProduct(req, res) {
-        const fetchProductQuery = `SELECT id, prodName, prodDesc, price, category, quantity, image, shipPrice FROM Products WHERE id = ?;`;
+    fetchTimeline(req, res) {
+        const fetchTimelineQuery = `SELECT id, prodName, prodDesc, price, category, quantity, image, shipPrice FROM Timelines WHERE id = ?;`;
 
-        db.query(fetchProductQuery, [req.params.id], (err, results) => {
+        db.query(fetchTimelineQuery, [req.params.id], (err, results) => {
             if (err) throw err, console.log(err);
             res.status(200).json({
                 results: results
             });
         });
     };
-    addProduct(req, res) {
-        const addProductQuery = `INSERT INTO Products SET ?;`;
+    addTimeline(req, res) {
+        const addTimelineQuery = `INSERT INTO Timelines SET ?;`;
 
-        db.query(addProductQuery, [req.body], (err) => {
+        db.query(addTimelineQuery, [req.body], (err) => {
             if (err) {
                 res.status(400).json({
                     err: 'Unable to insert a new record.'
                 }), console.log(err);;
             } else {
                 res.status(200).json({
-                    msg: 'Product saved'
+                    msg: 'Timeline saved'
                 });
             };
         });
     };
-    updateProduct(req, res) {
-        const updateQuery = `UPDATE Products SET ? WHERE id = ?;`;
+    updateTimeline(req, res) {
+        const updateQuery = `UPDATE Timelines SET ? WHERE id = ?;`;
 
         db.query(updateQuery, [req.body, req.params.id], (err) => {
             if (err) {
@@ -174,26 +48,210 @@ class Product {
                 });
             } else {
                 res.status(200).json({
-                    msg: 'Product updated'
+                    msg: 'Timeline updated'
                 });
             };
         });
     }
-    deleteProduct(req, res) {
-        const deleteQuery = `DELETE FROM Products WHERE id = ?;`;
+    deleteTimeline(req, res) {
+        const deleteQuery = `DELETE FROM Timelines WHERE id = ?;`;
 
         db.query(deleteQuery, [req.params.id], (err) => {
             if (err) res.status(400).json({
                 err: 'The record was not found.'
             });
             res.status(200).json({
-                msg: 'A product was deleted'
+                msg: 'A Timeline was deleted'
+            });
+        });
+    };
+};
+// Testimonials
+class Testimonial {
+    fetchTestimonials(req, res) {
+        const fetchAllTestimonials = `SELECT id, prodName, prodDesc, price, category, quantity, image, shipPrice FROM Testimonials;`;
+
+        db.query(fetchAllTestimonials, (err, results) => {
+            if (err) throw err, console.log(err);
+            res.status(200).json({
+                results: results
+            });
+        });
+    };
+    fetchTestimonial(req, res) {
+        const fetchTestimonialQuery = `SELECT id, prodName, prodDesc, price, category, quantity, image, shipPrice FROM Testimonials WHERE id = ?;`;
+
+        db.query(fetchTestimonialQuery, [req.params.id], (err, results) => {
+            if (err) throw err, console.log(err);
+            res.status(200).json({
+                results: results
+            });
+        });
+    };
+    addTestimonial(req, res) {
+        const addTestimonialQuery = `INSERT INTO Testimonials SET ?;`;
+
+        db.query(addTestimonialQuery, [req.body], (err) => {
+            if (err) {
+                res.status(400).json({
+                    err: 'Unable to insert a new record.'
+                }), console.log(err);;
+            } else {
+                res.status(200).json({
+                    msg: 'Testimonial saved'
+                });
+            };
+        });
+    };
+    updateTestimonial(req, res) {
+        const updateQuery = `UPDATE Testimonials SET ? WHERE id = ?;`;
+
+        db.query(updateQuery, [req.body, req.params.id], (err) => {
+            if (err) {
+                console.log(err);
+                res.status(400).json({
+                    err: 'Unable to update a record.'
+                });
+            } else {
+                res.status(200).json({
+                    msg: 'Testimonial updated'
+                });
+            };
+        });
+    }
+    deleteTestimonial(req, res) {
+        const deleteQuery = `DELETE FROM Testimonials WHERE id = ?;`;
+
+        db.query(deleteQuery, [req.params.id], (err) => {
+            if (err) res.status(400).json({
+                err: 'The record was not found.'
+            });
+            res.status(200).json({
+                msg: 'A Testimonial was deleted'
+            });
+        });
+    };
+};
+// Projects
+class Project {
+    fetchProjects(req, res) {
+        const fetchAllProjects = `SELECT id, prodName, prodDesc, price, category, quantity, image, shipPrice FROM Projects;`;
+
+        db.query(fetchAllProjects, (err, results) => {
+            if (err) throw err, console.log(err);
+            res.status(200).json({
+                results: results
+            });
+        });
+    };
+    fetchProject(req, res) {
+        const fetchProjectQuery = `SELECT id, prodName, prodDesc, price, category, quantity, image, shipPrice FROM Projects WHERE id = ?;`;
+
+        db.query(fetchProjectQuery, [req.params.id], (err, results) => {
+            if (err) throw err, console.log(err);
+            res.status(200).json({
+                results: results
+            });
+        });
+    };
+    addProject(req, res) {
+        const addProjectQuery = `INSERT INTO Projects SET ?;`;
+
+        db.query(addProjectQuery, [req.body], (err) => {
+            if (err) {
+                res.status(400).json({
+                    err: 'Unable to insert a new record.'
+                }), console.log(err);;
+            } else {
+                res.status(200).json({
+                    msg: 'Project saved'
+                });
+            };
+        });
+    };
+    updateProject(req, res) {
+        const updateQuery = `UPDATE Projects SET ? WHERE id = ?;`;
+
+        db.query(updateQuery, [req.body, req.params.id], (err) => {
+            if (err) {
+                console.log(err);
+                res.status(400).json({
+                    err: 'Unable to update a record.'
+                });
+            } else {
+                res.status(200).json({
+                    msg: 'Project updated'
+                });
+            };
+        });
+    }
+    deleteProject(req, res) {
+        const deleteQuery = `DELETE FROM Projects WHERE id = ?;`;
+
+        db.query(deleteQuery, [req.params.id], (err) => {
+            if (err) res.status(400).json({
+                err: 'The record was not found.'
+            });
+            res.status(200).json({
+                msg: 'A Project was deleted'
+            });
+        });
+    };
+};
+// Contacts
+class Contact{
+    fetchContacts(req, res) {
+        const fetchAllContacts = `SELECT id, prodName, prodDesc, price, category, quantity, image, shipPrice FROM Contacts;`;
+
+        db.query(fetchAllContacts, (err, results) => {
+            if (err) throw err, console.log(err);
+            res.status(200).json({
+                results: results
+            });
+        });
+    };
+    fetchContact(req, res) {
+        const fetchContactQuery = `SELECT id, prodName, prodDesc, price, category, quantity, image, shipPrice FROM Contacts WHERE id = ?;`;
+
+        db.query(fetchContactQuery, [req.params.id], (err, results) => {
+            if (err) throw err, console.log(err);
+            res.status(200).json({
+                results: results
+            });
+        });
+    };
+    addContact(req, res) {
+        const addContactQuery = `INSERT INTO Contacts SET ?;`;
+
+        db.query(addContactQuery, [req.body], (err) => {
+            if (err) {
+                res.status(400).json({
+                    err: 'Unable to insert a new record.'
+                }), console.log(err);;
+            } else {
+                res.status(200).json({
+                    msg: 'Contact saved'
+                });
+            };
+        });
+    };
+    deleteContact(req, res) {
+        const deleteQuery = `DELETE FROM Contacts WHERE id = ?;`;
+
+        db.query(deleteQuery, [req.params.id], (err) => {
+            if (err) res.status(400).json({
+                err: 'The record was not found.'
+            });
+            res.status(200).json({
+                msg: 'A Contact was deleted'
             });
         });
     };
 };
 
 module.exports = {
-    User,
-    Product
+   Timeline,
+   Testimonial,
+   Project,
+   Contact
 };
