@@ -60,7 +60,7 @@ route.delete('/timeline/:id', (req, res) => {
 });
 
 // Projects
-route.post('/projects', bodyParser.json(), (req, res) => {
+route.post('/project', bodyParser.json(), (req, res) => {
     project.addProject(req, res);
 });
 route.get('/project/:id', (req, res) => {
