@@ -201,7 +201,7 @@ class Project {
 // Contacts
 class Contact{
     fetchContacts(req, res) {
-        const fetchAllContacts = `SELECT idcontact, conName, conEmail, conNo, conText FROM Contacts;`;
+        const fetchAllContacts = `SELECT idcontact, conName, conEmail, conNo, conText FROM contacts;`;
 
         db.query(fetchAllContacts, (err, results) => {
             if (err) throw err, console.log(err);
@@ -211,7 +211,7 @@ class Contact{
         });
     };
     fetchContact(req, res) {
-        const fetchContactQuery = `SELECT idcontact, conName, conEmail, conNo, conText FROM Contacts WHERE idcontact = ?;`;
+        const fetchContactQuery = `SELECT idcontact, conName, conEmail, conNo, conText FROM contacts WHERE idcontact = ?;`;
 
         db.query(fetchContactQuery, [req.params.id], (err, results) => {
             if (err) throw err, console.log(err);
@@ -221,7 +221,7 @@ class Contact{
         });
     };
     addContact(req, res) {
-        const addContactQuery = `INSERT INTO Contacts SET ?;`;
+        const addContactQuery = `INSERT INTO contacts SET ?;`;
 
         db.query(addContactQuery, [req.body], (err) => {
             if (err) {
@@ -236,7 +236,7 @@ class Contact{
         });
     };
     deleteContact(req, res) {
-        const deleteQuery = `DELETE FROM Contacts WHERE idcontact = ?;`;
+        const deleteQuery = `DELETE FROM contacts WHERE idcontact = ?;`;
 
         db.query(deleteQuery, [req.params.id], (err) => {
             if (err) res.status(400).json({
